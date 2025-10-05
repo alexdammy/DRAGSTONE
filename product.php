@@ -39,7 +39,19 @@ if (!$p) { header('Location: ' . url('catalog.php')); exit; }
     <?php if (!empty($p['description'])): ?>
       <p><?= nl2br(esc($p['description'])) ?></p>
     <?php endif; ?>
-    <button class="btn btn-success" disabled>Add to Cart (coming soon)</button>
+
+    <!-- ✅ ADD TO CART FORM STARTS HERE -->
+    <form method="post" action="<?= url('cart_add.php') ?>" class="d-flex gap-3 align-items-end mt-4">
+      <input type="hidden" name="product_id" value="<?= (int)$p['id'] ?>">
+      <div>
+        <label class="form-label">Qty</label>
+        <input type="number" name="qty" value="1" min="1" class="form-control" style="width:100px">
+      </div>
+      <div class="pb-1">
+        <button class="btn btn-success btn-lg">🛒 Add to Cart</button>
+      </div>
+    </form>
+    <!-- ✅ ADD TO CART FORM ENDS HERE -->
   </div>
 </div>
 
