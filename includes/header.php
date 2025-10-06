@@ -1,43 +1,79 @@
 <?php
+// Always load BASE_URL first
 require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/functions.php';
-ensure_session();
-$user = current_user();
-$items = cart_count();
+require_once __DIR__ . '/session.php';    // starts session + flash helpers
+require_once __DIR__ . '/functions.php';  // url(), esc(), current_user(), cart_count(), etc.
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dragonstone Store</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <style>
+    body { padding-bottom: 50px; }
+    nav.navbar {
+      background-color: #111827;
+      padding: 0.8rem 1rem;
+    }
+    nav.navbar a.navbar-brand {
+      color: #10b981;
+      font-weight: bold;
+      font-size: 1.25rem;
+      text-decoration: none;
+    }
+    nav.navbar a {
+      color: #d1d5db;
+      text-decoration: none;
+      margin-right: 1rem;
+    }
+    nav.navbar a:hover {
+      color: #10b981;
+    }
+  </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-  <div class="container">
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
     <a class="navbar-brand" href="<?= url('index.php') ?>">🐉 Dragonstone</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link" href="<?= url('catalog.php') ?>">Catalog</a></li>
-      </ul>
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="<?= url('cart.php') ?>">Cart <span class="badge bg-success"><?= (int)$items ?></span></a>
-        </li>
-        <?php if ($user): ?>
-          <li class="nav-item"><span class="nav-link">Hi, <?= esc($user['name']) ?></span></li>
-          <li class="nav-item"><a class="nav-link" href="<?= url('auth_logout.php') ?>">Logout</a></li>
-        <?php else: ?>
-          <li class="nav-item"><a class="nav-link" href="<?= url('auth_login.php') ?>">Login</a></li>
-          <li class="nav-item"><a class="nav-link" href="<?= url('auth_register.php') ?>">Register</a></li>
-        <?php endif; ?>
-      </ul>
+    <div>
+      <a href="<?= url('catalog.php') ?>">Catalog</a>
+
+      <?php if (is_logged_in()): ?>
+        <a href="<?= url('cart.php') ?>">Cart 🛒 (<?= cart_count() ?>)</a>
+        <span style="color:#9ca3af;">|</span>
+        <span style="color:#10b981;">👋 <?= esc(current_user()['name']) ?></span>
+        <?php if (current_user()['role'] === 'admin'): ?>
+  <a href="<?= url('admin.php') ?>">Dashboard</a>
+<?php endif; ?>
+        <a href="<?= url('auth_logout.php') ?>">Logout</a>
+      <?php else: ?>
+        <a href="<?= url('cart.php') ?>">Cart 🛒 (<?= cart_count() ?>)</a>
+        <a href="<?= url('auth_login.php') ?>">Login</a>
+        <a href="<?= url('auth_register.php') ?>">Register</a>
+      <?php endif; ?>
     </div>
   </div>
 </nav>
-<div class="container">
+
+<?php
+// Flash banner (success/info)
+$flash = get_flash();
+if ($flash):
+?>
+  <div style="
+    background: <?= $flash['type'] === 'info' ? '#dbeafe' : '#dcfce7' ?>;
+    color: #111827;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 10px auto;
+    max-width: 960px;
+    text-align: center;
+  ">
+    <?= esc($flash['msg']) ?>
+  </div>
+<?php endif; ?>
+
+<div class="container mt-4">

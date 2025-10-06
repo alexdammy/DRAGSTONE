@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/session.php';
 
 $slug = $_GET['slug'] ?? '';
 if ($slug === '') { header('Location: ' . url('catalog.php')); exit; }

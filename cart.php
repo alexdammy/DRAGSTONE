@@ -2,6 +2,7 @@
 // Handle POST BEFORE any HTML output
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/session.php';
 
 ensure_session();
 $cart =& cart_ref();
@@ -79,10 +80,10 @@ require_once __DIR__ . '/includes/header.php';
         </tfoot>
       </table>
     </div>
-    <div class="d-flex gap-2 mt-3">
-      <button class="btn btn-outline-primary" type="submit">Update Cart</button>
-      <button class="btn btn-success" disabled>Checkout (coming soon)</button>
-    </div>
+    <div class="d-flex gap-2">
+  <button class="btn btn-outline-primary" type="submit" name="action" value="update">Update Cart</button>
+  <a class="btn btn-success" href="<?= url('checkout.php') ?>">Checkout</a>
+</div>
   </form>
 <?php endif; ?>
 

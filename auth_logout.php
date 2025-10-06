@@ -1,11 +1,10 @@
 <?php
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/functions.php'; // <-- needed for url() + sessions
+require_once __DIR__ . '/includes/config.php';   // <-- defines BASE_URL
+require_once __DIR__ . '/includes/session.php';
+require_once __DIR__ . '/includes/functions.php'; // url(), ensure_session(), etc.
 
-ensure_session();
-$_SESSION = [];
-session_destroy();
+logout_user();
+set_flash('You have been logged out successfully.', 'info');
 
-// redirect anywhere you like:
-header('Location: ' . url('catalog.php')); // or url('index.php') if you made a homepage
+header('Location: ' . url('auth_login.php'));
 exit;
