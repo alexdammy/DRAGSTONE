@@ -1,0 +1,47 @@
+/* /Applications/MAMP/htdocs/DRAGSTONE/assets/site.css */
+
+/* Subtle brand look */
+:root{
+  --brand-green:#10b981;
+  --brand-ink:#111827;
+  --card-border:#e5e7eb;
+}
+
+/* Make sure body bottom spacing is enough for footer */
+body{ padding-bottom: 48px; }
+
+/* HERO */
+.hero-wrapper{
+  background: linear-gradient(180deg,#f7fdf9 0%,#ffffff 100%);
+}
+.hero-img{
+  background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=1600&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--card-border);
+}
+
+/* CATEGORY CARDS */
+.cat-card{
+  border:1px solid var(--card-border);
+  background:#fff;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.cat-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,.06);
+  text-decoration:none;
+}
+
+/* FEATURES */
+.feature-card{
+  border:1px solid var(--card-border);
+  background:#fff;
+}
+
+/* PRODUCT CARDS */
+.product-card .product-thumb{
+  background-image: url('https://images.unsplash.com/photo-1524594227088-8b4bd1bfa9a0?q=80&w=1200&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+}

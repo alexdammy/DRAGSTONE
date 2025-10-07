@@ -1,20 +1,11 @@
 <?php
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/functions.php';
-require_once __DIR__ . '/includes/db.php';
-require_once __DIR__ . '/includes/session.php';
-require_once __DIR__ . '/includes/header.php';
-
-if (!is_logged_in() || (current_user()['role'] ?? '') !== 'admin') {
-  set_flash('Admins only.', 'info');
-  header('Location: ' . url('auth_login.php'));
-  exit;
-}
+// /admin/order_view.php
+require_once __DIR__ . '/layout/header.php'; // includes _bootstrap + admin_guard()
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id <= 0) {
   set_flash('Invalid order id', 'info');
-  header('Location: ' . url('admin_orders.php'));
+  header('Location: ' . admin_url('orders.php'));
   exit;
 }
 
@@ -31,7 +22,7 @@ $order = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$order) {
   set_flash('Order not found', 'info');
-  header('Location: ' . url('admin_orders.php'));
+  header('Location: ' . admin_url('orders.php'));
   exit;
 }
 
@@ -64,51 +55,49 @@ function _status_badge_class(string $s): string {
 }
 ?>
 <style>
-  .ds-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 16px;
+  .admin-card {
+    background:#111827;
+    border:1px solid #1f2937;
+    border-radius:10px;
+    padding:16px;
+    color:#e5e7eb;
   }
+  .table thead th { border-bottom-color:#1f2937; }
+  .badge-soft { background:#1f2937; border:1px solid #374151; color:#e5e7eb; }
+  label.form-label { color:#d1d5db; }
+  select.form-select, input.form-control { background:#1f2937; color:#f9fafb; border:none; }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h1 class="h4 mb-0">Order #<?= (int)$order['id'] ?></h1>
-  <div class="d-flex gap-2">
-    <a href="<?= url('admin_orders.php') ?>"
-       class="btn btn-secondary"
-       style="background:#374151; border:none;">
-      ← Back to Orders
-    </a>
-  </div>
+  <a href="<?= admin_url('orders.php') ?>" class="btn btn-secondary" style="background:#374151;border:none;">
+  ← Back to Orders
+</a>
+
 </div>
 
 <div class="row g-3 mb-3">
   <div class="col-lg-6">
-    <div class="ds-card">
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <div class="me-3">
-          <div class="mb-1">
-            <strong>Status:</strong>
-            <span class="badge bg-<?= _status_badge_class($order['status']) ?>">
-              <?= esc($order['status']) ?>
-            </span>
-          </div>
-          <div class="mb-1"><strong>Date:</strong> <?= esc($order['created_at']) ?></div>
-          <div class="mb-1">
-            <strong>Customer:</strong>
-            <?= esc($order['user_name'] ?: 'Guest') ?>
-            (<?= esc($order['user_email'] ?: '-') ?>)
-          </div>
-          <div class="mb-1">
-            <strong>Stored Total:</strong> $<?= price($order['total']) ?>
-          </div>
-        </div>
+    <div class="admin-card">
+      <div class="mb-2">
+        <strong>Status:</strong>
+        <span class="badge bg-<?= _status_badge_class($order['status']) ?>">
+          <?= esc($order['status']) ?>
+        </span>
+      </div>
+      <div class="mb-1"><strong>Date:</strong> <?= esc($order['created_at']) ?></div>
+      <div class="mb-1">
+        <strong>Customer:</strong>
+        <?= esc($order['user_name'] ?: 'Guest') ?>
+        (<?= esc($order['user_email'] ?: '-') ?>)
+      </div>
+      <div class="mb-1">
+        <strong>Stored Total:</strong> $<?= price($order['total']) ?>
       </div>
 
       <!-- Status update form -->
-      <form method="post" action="<?= url('admin_order_update.php') ?>" class="row g-2 align-items-end">
-        <input type="hidden" name="order_id" value="<?= (int)$order['id'] ?>">
+      <form method="post" action="<?= admin_url('order_update.php') ?>" class="row g-2 align-items-end mt-3">
+        <input type="hidden" name="id" value="<?= (int)$order['id'] ?>">
         <div class="col-8">
           <label class="form-label"><strong>Update Status</strong></label>
           <select name="status" class="form-select">
@@ -131,10 +120,10 @@ function _status_badge_class(string $s): string {
   </div>
 </div>
 
-<div class="ds-card">
+<div class="admin-card">
   <h2 class="h5 mb-3">Items</h2>
-  <table class="table table-bordered align-middle mb-3">
-    <thead class="table-light">
+  <table class="table table-dark table-striped align-middle mb-3">
+    <thead>
       <tr>
         <th>Product</th>
         <th class="text-end">Qty</th>
@@ -163,10 +152,6 @@ function _status_badge_class(string $s): string {
       </tr>
     </tfoot>
   </table>
-
-  <div class="d-flex justify-content-end">
-    <a href="<?= url('admin_orders.php') ?>" class="btn btn-outline-secondary">← Back to Orders</a>
-  </div>
 </div>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/layout/footer.php'; ?>
